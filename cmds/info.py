@@ -1,5 +1,9 @@
 from utils.formatting import format_date, format_size
+from utils.colors import color
 
+from colorama import Fore, Style
+
+lines = []
 
 # Return languages as percentages, e.g. 'Python 82.1%, Shell 17.9%'.
 def get_language_breakdown(repo):
@@ -58,5 +62,11 @@ def cmd_info(repo_wrapper):
         rows.append(("Status", ", ".join(status)))
 
     label_width = max(len(label) for label, _ in rows)
-    lines = [f"{label:<{label_width}} : {value}" for label, value in rows]
+
+    for label, value in rows:
+        padded_label = label.ljust(label_width)
+        # Creates a green label with a white colon and the value of the label, e.g. "Name: repo_name"
+        line = f"{color(padded_label, Fore.GREEN)} {Style.BRIGHT}{color(':' , Fore.WHITE)}{Style.RESET_ALL} {value}"
+        lines.append(line)
+    
     return "\n".join(lines)
