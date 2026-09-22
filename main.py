@@ -1,43 +1,46 @@
-from Repo import set_repo
-from cmds.Commands import cmd
+from RepoData import set_repo
+from cmds.cmd import cmd
 
 import subprocess
 import os
 
-found = False
-user_input = ""
-
-current_repo = None
-repo_name = ""
 
 def clear_terminal():
-    if os.name == "nt": # Windows systems
-        subprocess.call('cls', shell=True)
+    if os.name == "nt":  # Windows systems
+        subprocess.call("cls", shell=True)
     else:
-        subprocess.call('clear')
-    
+        subprocess.call("clear")
+
 
 clear_terminal()
 
-while True:
+current_repo = None
 
-    repo_name = input("Enter repo author and name with a slash (/) inbetween. (e.g name/repo_name), or press q to quit: ")
-    current_repo = set_repo(repo_name)
+while True:
+    repo_name = input("Enter repo author and name with a slash (/) in between "
+                      "(e.g. name/repo_name), or press q to quit: ").strip()
 
     if repo_name.lower() == "q":
         break
-    elif current_repo is None:
+
+    current_repo = set_repo(repo_name)
+    if current_repo is None:
         print("Repo not found, please try again!")
     else:
-        found = True
         break
 
-while True: 
-    if found == False: break
+while current_repo is not None:
+    user_input = input(current_repo.get_repo() + "> ").strip()
+    parts = user_input.split(maxsplit=1)
 
-    user_input = input(current_repo.get_repo() + "> ")
+    if not parts:          # empty input, ask again
+        continue
 
-    # quits the application
-    if(user_input == "q"): break
+    # Split the input into the command and any parameters
+    command = parts[0].lower()
+    parameters = parts[1] if len(parts) > 1 else ""
 
-    cmd(user_input)
+    if command == "q":
+        break
+
+    cmd(current_repo, command, parameters)
