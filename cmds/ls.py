@@ -5,6 +5,7 @@ def sort_folders_first(item):
 
 
 def cmd_ls(repo, path=""):
+    lines = []
     try:
         items = repo.repo.get_contents(path)
     except UnknownObjectException:
@@ -13,7 +14,7 @@ def cmd_ls(repo, path=""):
     if not isinstance(items, list):   # the path was a single file
         return items.name
 
-    lines = []
+    
 
     # Sorts each item in a list of files and directories, putting directories first and then files, both in alphabetical order.
     sorted_items = sorted(items, key=sort_folders_first)
