@@ -1,18 +1,26 @@
-from cmds.ls import format_size
-from utils.formatting import format_date
+from utils.formatting import format_date, format_size
 
 
 # Return languages as percentages, e.g. 'Python 82.1%, Shell 17.9%'.
 def get_language_breakdown(repo):
     languages = repo.get_languages()   # costs 1 extra request
-    total = sum(languages.values())
-    if total == 0:
-        return "None detected"
-
     parts = []
-    for name, byte_count in languages.items():
-        percent = byte_count / total * 100
-        parts.append(f"{name} {percent:.1f}%")
+    total = 0
+    # Seperates JSON values into a str "lang" and num is the byte count of that language within the repo
+    for lang, num in languages.items():
+        if lang != 'url':
+            total += num
+            if(total == 0):
+                return "None detected"
+
+    # Only gets the top 5 languages within the repo and calculates the percentage of each language within the repo
+    for lang, num in list(languages.items())[:5]:
+        if lang != 'url':
+            precent = round(num / total * 100, 2)
+            parts.append(f"{lang} {precent}%")
+
+            
+
     return ", ".join(parts)
 
 
