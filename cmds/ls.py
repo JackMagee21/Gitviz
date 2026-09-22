@@ -1,5 +1,9 @@
 from github import UnknownObjectException
 
+def sort_folders_first(item):
+    return (item.type != "dir", item.name)
+
+
 def cmd_ls(repo, path=""):
     try:
         items = repo.repo.get_contents(path)
@@ -10,6 +14,14 @@ def cmd_ls(repo, path=""):
         return items.name
 
     lines = []
-    for item in sorted(items, key=lambda i: (i.type != "dir", i.name)):
-        lines.append(f"{item.name}/" if item.type == "dir" else item.name)
+
+    # Sorts each item in a list of files and directories, putting directories first and then files, both in alphabetical order.
+    sorted_items = sorted(items, key=sort_folders_first)
+
+    for item in sorted_items:
+        if item.type == "dir":
+            lines.append(f"{item.name}/")
+        else:
+            lines.append(item.name)
+
     return "\n".join(lines)
