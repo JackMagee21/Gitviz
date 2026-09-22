@@ -30,7 +30,9 @@ while True:
         break
 
 while current_repo is not None:
-    user_input = input(current_repo.get_repo() + "> ").strip()
+    
+    prompt = f"{current_repo.get_repo()}:/{current_repo.current_path}> "
+    user_input = input(prompt).strip()
     parts = user_input.split(maxsplit=1)
 
     if not parts:          # empty input, ask again
