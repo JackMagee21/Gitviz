@@ -10,6 +10,15 @@ class RepoWrapper:
     def get_repo(self):
         return self.repo.full_name
 
+    def get_commits(self, count=10, path=""):
+        # Returns the 10 most recent commits based on the path by default
+        if path != "":
+            all_commits = self.repo.get_commits(path=path)
+        else:
+            all_commits = self.repo.get_commits()
+
+        return list(all_commits[:count])
+
 #returns an "empty none" object if the repo cannot be found 
 def set_repo(repo_name):
     try:
