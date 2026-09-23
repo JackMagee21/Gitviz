@@ -1,3 +1,5 @@
+import time
+
 from github import Github, UnknownObjectException
 
 git = Github()  # Limited to 60 requests per hour.
@@ -18,6 +20,18 @@ class RepoWrapper:
             all_commits = self.repo.get_commits()
 
         return list(all_commits[:count])
+
+    def get_stats_contributors(self, retries=5, delay=2):
+        # GitHub computes contributor stats asynchronously. A None result means
+        # "still generating" (HTTP 202) rather than "no contributors", so retry
+        # a few times with a short pause before giving up.
+        for attempt in range(retries):
+            stats = self.repo.get_stats_contributors()
+            if stats is not None:
+                return stats
+            time.sleep(delay)
+
+        return None
 
     def switch_repo(self, repo):
         try:
