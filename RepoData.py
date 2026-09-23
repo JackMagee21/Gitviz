@@ -19,6 +19,17 @@ class RepoWrapper:
 
         return list(all_commits[:count])
 
+    def switch_repo(self, repo):
+        try:
+            new_repo = git.get_repo(repo)
+        except UnknownObjectException:
+            return False
+
+        self.repo = new_repo
+        self.current_path = "" # Ensures that when a repo swaps it goes to the root of the new repo
+        return True
+
+
 #returns an "empty none" object if the repo cannot be found 
 def set_repo(repo_name):
     try:
