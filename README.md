@@ -58,7 +58,7 @@ Type `q` at any prompt to quit.
 
 Run `help <command>` inside the app for details on any single command.
 
-## Limitations
+## Current Limitations
 
 - Gitviz talks to the **unauthenticated** GitHub API, which is capped at 60 requests per hour — heavy browsing of a single repo can exhaust that quickly.
 - `summary` and `log` are fetched live from GitHub each time, so results depend on GitHub's API availability and response time.
