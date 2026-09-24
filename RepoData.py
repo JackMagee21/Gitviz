@@ -64,6 +64,33 @@ class RepoWrapper:
         except UnicodeDecodeError:
             return None, "binary file, not displayed"
 
+    def get_tree(self, path="", rev=None):
+        # Returns (entries, error). entries is the list of GitTreeElement
+        # items (blobs/trees) under `path`, fetched recursively in a single
+        # API call; error explains a failure instead of raising. `rev`
+        # defaults to the repo's default branch.
+        branch = rev or self.repo.default_branch
+        path = path.strip("/")
+
+        try:
+            git_tree = self.repo.get_git_tree(branch, recursive=True)
+        except UnknownObjectException:
+            return None, "no such branch or revision"
+
+        if path == "":
+            return git_tree.tree, None
+
+        matches = [
+            entry for entry in git_tree.tree
+            if entry.path == path or entry.path.startswith(path + "/")
+        ]
+
+        if not matches:
+            return None, "no such file or directory"
+
+        return matches, None
+        
+
 #returns an "empty none" object if the repo cannot be found 
 def set_repo(repo_name):
     try:

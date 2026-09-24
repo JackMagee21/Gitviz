@@ -6,6 +6,7 @@ from cmds.logs import cmd_log
 from cmds.repo import cmd_repo
 from cmds.summary import cmd_summary
 from cmds.cat import cmd_cat
+from cmds.tree import cmd_tree
 
 def cmd(repo, command, parameters=""):
     if command == "help":
@@ -24,5 +25,7 @@ def cmd(repo, command, parameters=""):
         cmd_summary(repo, parameters)
     elif command == "cat":
         cmd_cat(repo, parameters)
+    elif command == "tree":
+        cmd_tree(repo, parameters)
     else:
         print("Sorry, command not found")
