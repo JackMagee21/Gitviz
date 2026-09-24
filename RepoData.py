@@ -43,6 +43,13 @@ class RepoWrapper:
         self.current_path = "" # Ensures that when a repo swaps it goes to the root of the new repo
         return True
 
+    def get_file_content(self, file_path): 
+        try:
+            print(file_path)
+            file_content = self.repo.get_contents(file_path)
+            return file_content.decoded_content.decode("utf-8")
+        except UnknownObjectException:
+            return None
 
 #returns an "empty none" object if the repo cannot be found 
 def set_repo(repo_name):

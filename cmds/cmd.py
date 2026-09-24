@@ -5,6 +5,7 @@ from cmds.cd import cmd_cd
 from cmds.logs import cmd_log
 from cmds.repo import cmd_repo
 from cmds.summary import cmd_summary
+from cmds.cat import cmd_cat
 
 def cmd(repo, command, parameters=""):
     if command == "help":
@@ -21,5 +22,7 @@ def cmd(repo, command, parameters=""):
         cmd_repo(repo, parameters)
     elif command == "summary":
         cmd_summary(repo, parameters)
+    elif command == "cat":
+        cmd_cat(repo, parameters)
     else:
         print("Sorry, command not found")
