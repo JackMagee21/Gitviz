@@ -4,6 +4,8 @@ from github import Github, UnknownObjectException
 
 git = Github()  # Limited to 60 requests per hour.
 
+MAX_FILE_SIZE = 1024 * 1024  # GitHub's Contents API only returns content for files up to 1 MB
+
 class RepoWrapper:
     def __init__(self, repo_name):
         self.repo = git.get_repo(repo_name)
@@ -43,13 +45,24 @@ class RepoWrapper:
         self.current_path = "" # Ensures that when a repo swaps it goes to the root of the new repo
         return True
 
-    def get_file_content(self, file_path): 
+    def get_file_content(self, file_path):
+        # Returns (content, error). On failure content is None and error
+        # explains why, so the caller can show a message instead of crashing.
         try:
-            print(file_path)
-            file_content = self.repo.get_contents(file_path)
-            return file_content.decoded_content.decode("utf-8")
+            item = self.repo.get_contents(file_path)
         except UnknownObjectException:
-            return None
+            return None, "no such file"
+
+        if isinstance(item, list):
+            return None, "is a directory, not a file"
+
+        if item.size > MAX_FILE_SIZE:
+            return None, "file is too large to display (GitHub only returns content up to 1 MB)"
+
+        try:
+            return item.decoded_content.decode("utf-8"), None
+        except UnicodeDecodeError:
+            return None, "binary file, not displayed"
 
 #returns an "empty none" object if the repo cannot be found 
 def set_repo(repo_name):
