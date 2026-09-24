@@ -20,7 +20,7 @@ def cmd_cat(repo, parameters=""):
     target, show_all = parse_cat_args(parameters)
 
     if not target:
-        print("cat: no file specified, e.g. 'cat path/to/file.py'")
+        print("cat: no file specified, e.g. 'cat path/to/file.py' or 'file.py' within the current directory")
         return
 
     file_path = figure_path(repo.current_path, target)
