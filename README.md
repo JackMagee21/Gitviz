@@ -50,6 +50,7 @@ Type `q` at any prompt to quit.
 | Help | `help [command]` | Shows this list, or details about one command |
 | Info | `info` | Shows details about the current repo (description, stars, languages, etc.) |
 | List | `ls [path]` | Lists files and folders in a directory (folders first, alphabetical) |
+| Cat | `cat <path> [all]` | Shows a file's content; previews the first 40 lines unless `all` is given |
 | Change directory | `cd [path]` | Changes directory; `cd` or `cd /` returns to the repo root, `cd ..` goes up one level |
 | Log | `log [count]` | Shows the most recent commits for the current directory (default 10, max 100) |
 | Summary | `summary` | Shows the top 5 contributors by commits, additions and deletions |
@@ -61,9 +62,10 @@ Run `help <command>` inside the app for details on any single command.
 ## Current Limitations
 
 - Gitviz talks to the **unauthenticated** GitHub API, which is capped at 60 requests per hour — heavy browsing of a single repo can exhaust that quickly.
-- `summary` and `log` are fetched live from GitHub each time, so results depend on GitHub's API availability and response time.
-- On repos GitHub hasn't recently cached contributor stats for, `summary` may need a few seconds (and a retry) before data is ready.
-- On repos with 10,000+ commits, GitHub's API stops returning addition/deletion counts; `summary` shows `N/A` for those columns rather than a misleading `0`. See [`cmds/summaryLimitations.md`](cmds/summaryLimitations.md) for details.
+- All commands are fetched live from GitHub each time, so results depend on GitHub's API availability and response time.
+- Every command reads from the repo's default branch — there's no way to browse a different branch or tag.
+
+See [`LIMITATIONS.md`](LIMITATIONS.md) for the full list, including known gaps in `ls`, `log`, `summary`, and `repo`.
 
 ## Project structure
 
@@ -72,7 +74,7 @@ main.py                    REPL entry point
 RepoData.py                RepoWrapper: wraps the PyGithub repo object + current path
 cmds/
   cmd.py                   Command dispatcher
-  help.py, info.py, ls.py, cd.py, logs.py, repo.py, summary.py
+  help.py, info.py, ls.py, cd.py, logs.py, repo.py, summary.py, cat.py
                             One module per command
 utils/
   colors.py                Color helper (auto-disables outside a TTY / with NO_COLOR)
