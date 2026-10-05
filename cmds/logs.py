@@ -1,5 +1,4 @@
-from github import Github, GithubException
-from colorama import Fore, Style
+from colorama import Fore
 
 from utils.colors import color
 from utils.formatting import format_date
@@ -10,8 +9,6 @@ DEFAULT_NUM_OF_LOGS = 10
 MAX_COUNT = 100
 MAX_MESSAGE_LENGTH = 70
 
-
-git = Github()
 
 def parse_log_args(parameters):
     # Split the parameters into a commit count and an optional path.
