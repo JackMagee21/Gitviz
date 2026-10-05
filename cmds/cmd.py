@@ -7,6 +7,8 @@ from cmds.repo import cmd_repo
 from cmds.summary import cmd_summary
 from cmds.cat import cmd_cat
 from cmds.tree import cmd_tree
+from cmds.clear import cmd_clear
+from cmds.key import cmd_key
 
 def cmd(repo, command, parameters=""):
     if command == "help":
@@ -27,5 +29,9 @@ def cmd(repo, command, parameters=""):
         cmd_cat(repo, parameters)
     elif command == "tree":
         cmd_tree(repo, parameters)
+    elif command == "clear" or command == "clr":
+        cmd_clear(parameters);
+    elif command == "key":
+        print(cmd_key(repo, parameters))
     else:
         print("Sorry, command not found")

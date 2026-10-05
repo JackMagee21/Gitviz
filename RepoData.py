@@ -1,8 +1,33 @@
+import os
 import time
 
-from github import Github, UnknownObjectException
+from dotenv import load_dotenv
+from github import Auth, Github, UnknownObjectException
 
-git = Github()  # Limited to 60 requests per hour.
+load_dotenv()
+
+def _build_client():
+    token = os.environ.get("GITHUB_TOKEN")
+    if token:
+        return Github(auth=Auth.Token(token))
+    return Github()  # Unauthenticated: limited to 60 requests per hour.
+
+git = _build_client()
+
+def set_github_token(token):
+    # Rebuilds the shared client so a token set via 'key <token>' applies
+    # immediately, without restarting the app.
+    global git
+    os.environ["GITHUB_TOKEN"] = token
+    git = _build_client()
+
+def get_rate_limit():
+    rate = git.get_rate_limit().rate
+    return rate.remaining, rate.limit
+
+def single_rate_limit():
+    single_rate = git.get_rate_limit().rate
+    return single_rate.limit
 
 MAX_FILE_SIZE = 1024 * 1024  # GitHub's Contents API only returns content for files up to 1 MB
 
