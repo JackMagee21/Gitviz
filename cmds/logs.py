@@ -38,35 +38,44 @@ def first_line(message):
 
 def cmd_log(repo, parameters=""):
 
-    current_commit_ids = None
-    current_repo_path = repo.current_path
+    try:
 
-    if parameters == "":
-        current_commit_ids = repo.get_commits(DEFAULT_NUM_OF_LOGS, current_repo_path)
-    else:
-        current_commit_ids = repo.get_commits(int(parameters), current_repo_path)
+        if int(parameters) < 0:
+            print("log: Cannot use an interger bellow 0")
+            return
 
-    if not current_commit_ids:
-        print("log: no commits found")
+        current_commit_ids = None
+        current_repo_path = repo.current_path
+
+        if parameters == "":
+            current_commit_ids = repo.get_commits(DEFAULT_NUM_OF_LOGS, current_repo_path)
+        else:
+            current_commit_ids = repo.get_commits(int(parameters), current_repo_path)
+
+        if not current_commit_ids:
+            print("log: no commits found")
+            return
+
+        headers = ("Commit ID", "Author", "Date", "Message")
+        rows = [
+            (
+                com.sha[:7],
+                com.commit.author.name or "Unknown",
+                format_date(com.commit.author.date),
+                first_line(com.commit.message),
+            )
+            for com in current_commit_ids
+        ]
+
+        # Work out how wide each column needs to be so everything lines up
+        widths = [
+            max(len(header), max(len(row[col]) for row in rows))
+            for col, header in enumerate(headers)
+        ]
+        column_colors = (Fore.CYAN, Fore.YELLOW, Fore.MAGENTA, Fore.GREEN)
+    except ValueError:
+        print("log: invalid number format")
         return
-
-    headers = ("Commit ID", "Author", "Date", "Message")
-    rows = [
-        (
-            com.sha[:7],
-            com.commit.author.name or "Unknown",
-            format_date(com.commit.author.date),
-            first_line(com.commit.message),
-        )
-        for com in current_commit_ids
-    ]
-
-    # Work out how wide each column needs to be so everything lines up
-    widths = [
-        max(len(header), max(len(row[col]) for row in rows))
-        for col, header in enumerate(headers)
-    ]
-    column_colors = (Fore.CYAN, Fore.YELLOW, Fore.MAGENTA, Fore.GREEN)
 
     def render_row(values, colors=None):
         cells = []
