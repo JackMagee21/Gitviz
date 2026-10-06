@@ -12,41 +12,46 @@ def clear_terminal():
         subprocess.call("clear")
 
 
-clear_terminal()
+def main():
+    clear_terminal()
 
-token_warning = get_token_warning()
-if token_warning:
-    print(f"Warning: {token_warning}")
+    token_warning = get_token_warning()
+    if token_warning:
+        print(f"Warning: {token_warning}")
 
-current_repo = None
+    current_repo = None
 
-while True:
-    repo_name = input("Enter repo author and name with a slash (/) in between "
-                      "(e.g. name/repo_name), or press q to quit: ").strip()
+    while True:
+        repo_name = input("Enter repo author and name with a slash (/) in between "
+                          "(e.g. name/repo_name), or press q to quit: ").strip()
 
-    if repo_name.lower() == "q":
-        break
+        if repo_name.lower() == "q":
+            return
 
-    current_repo = set_repo(repo_name)
-    if current_repo is None:
-        print("Repo not found, please try again!")
-    else:
-        break
+        current_repo = set_repo(repo_name)
+        if current_repo is None:
+            print("Repo not found, please try again!")
+        else:
+            break
 
-while current_repo is not None:
-    
-    prompt = f"{current_repo.get_repo()}:/{current_repo.current_path}> "
-    user_input = input(prompt).strip()
-    parts = user_input.split(maxsplit=1)
+    while current_repo is not None:
 
-    if not parts:          # empty input, ask again
-        continue
+        prompt = f"{current_repo.get_repo()}:/{current_repo.current_path}> "
+        user_input = input(prompt).strip()
+        parts = user_input.split(maxsplit=1)
 
-    # Split the input into the command and any parameters
-    command = parts[0].lower()
-    parameters = parts[1] if len(parts) > 1 else ""
+        if not parts:          # empty input, ask again
+            continue
 
-    if command == "q":
-        break
+        # Split the input into the command and any parameters
+        command = parts[0].lower()
+        parameters = parts[1] if len(parts) > 1 else ""
 
-    cmd(current_repo, command, parameters)
+        if command == "q":
+            break
+
+        cmd(current_repo, command, parameters)
+
+
+if __name__ == "__main__":
+    main()
