@@ -9,6 +9,7 @@ COMMANDS = {
     "repo":    ("repo <author/name>",   "switches to browsing a different repo, e.g. 'repo torvalds/linux'"),
     "tree":    ("tree [path]",          "shows a nested tree of all files and folders under a path"),
     "key":     ("key [token]",          "sets a GitHub token to raise the API rate limit (60/hr -> 5000/hr); no args shows current usage"),
+    "clear":   ("clear",                "clears the terminal screen ('clr' also works)"),
     "q":       ("q",                    "quits the application"),
 }
 
