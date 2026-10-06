@@ -7,6 +7,7 @@ BAR_WIDTH = 20
 
 TOP_N = 5
 LARGE_REPO_COMMIT_THRESHOLD = 10000  # GitHub omits addition/deletion counts past this
+STATS_CONTRIBUTOR_CAP = 100  # GitHub's stats/contributors endpoint only ever returns the top 100
 
 
 def cmd_summary(repo, parameters=""):
@@ -25,6 +26,17 @@ def cmd_summary(repo, parameters=""):
 
     total_commits = sum(contributor.total for contributor in stats)
     stats_unavailable = total_commits >= LARGE_REPO_COMMIT_THRESHOLD
+
+    # GitHub caches contributor stats and computes them asynchronously; a repo with
+    # recent commit activity can have a stale cache that silently omits contributors
+    # or undercounts them, without ever signalling "still computing" (see get_stats_contributors).
+    # Skip this check when the endpoint hit its documented 100-contributor cap, since
+    # that alone (not staleness) explains a lower total and can't affect the top N shown.
+    actual_commit_count = repo.repo.get_commits().totalCount
+    if len(stats) < STATS_CONTRIBUTOR_CAP and total_commits < actual_commit_count:
+        print(f"Warning: GitHub's cached contributor stats look stale "
+              f"({total_commits}/{actual_commit_count} commits accounted for) - "
+              "contributors below may be missing or undercounted.\n")
 
     contributors = []
     for contributor in stats:
