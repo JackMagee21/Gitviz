@@ -2,17 +2,35 @@ import os
 import time
 
 from dotenv import load_dotenv
-from github import Auth, Github, UnknownObjectException
+from github import Auth, BadCredentialsException, Github, UnknownObjectException
 
 load_dotenv()
 
+TOKEN_WARNING = None  # Set by _build_client() when a saved/given token is rejected.
+
 def _build_client():
+    global TOKEN_WARNING
+    TOKEN_WARNING = None
+
     token = os.environ.get("GITHUB_TOKEN")
-    if token:
-        return Github(auth=Auth.Token(token))
-    return Github()  # Unauthenticated: limited to 60 requests per hour.
+    if not token:
+        return Github()  # Unauthenticated: limited to 60 requests per hour.
+
+    client = Github(auth=Auth.Token(token))
+    try:
+        client.get_rate_limit()  # Cheap call that still requires valid credentials.
+    except BadCredentialsException:
+        TOKEN_WARNING = ("Your saved GitHub token appears to be invalid or expired "
+                          "- continuing without it (60 requests/hour limit). "
+                          "Use 'key <token>' to set a new one.")
+        return Github()
+
+    return client
 
 git = _build_client()
+
+def get_token_warning():
+    return TOKEN_WARNING
 
 def set_github_token(token):
     # Rebuilds the shared client so a token set via 'key <token>' applies

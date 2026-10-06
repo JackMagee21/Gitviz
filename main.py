@@ -1,4 +1,4 @@
-from RepoData import set_repo
+from RepoData import set_repo, get_token_warning
 from cmds.cmd import cmd
 
 import subprocess
@@ -13,6 +13,10 @@ def clear_terminal():
 
 
 clear_terminal()
+
+token_warning = get_token_warning()
+if token_warning:
+    print(f"Warning: {token_warning}")
 
 current_repo = None
 
