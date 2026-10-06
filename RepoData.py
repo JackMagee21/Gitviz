@@ -43,10 +43,6 @@ def get_rate_limit():
     rate = git.get_rate_limit().rate
     return rate.remaining, rate.limit
 
-def single_rate_limit():
-    single_rate = git.get_rate_limit().rate
-    return single_rate.limit
-
 MAX_FILE_SIZE = 1024 * 1024  # GitHub's Contents API only returns content for files up to 1 MB
 
 class RepoWrapper:
