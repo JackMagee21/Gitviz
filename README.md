@@ -25,15 +25,42 @@ Gitviz is a terminal REPL for exploring a public GitHub repository — browse it
 
 ## Installation
 
+### Quick install (recommended)
+
+Gitviz can be installed as a standalone `gitviz` command using [pipx](https://pipx.pypa.io/), which installs it into its own isolated environment and puts it on your PATH automatically:
+
+```
+pipx install git+https://github.com/JackMagee21/Gitviz.git
+```
+
+Don't have pipx yet? Install it once (works on Windows, macOS, and Linux):
+
+```
+pip install --user pipx
+pipx ensurepath
+```
+
+Then re-open your terminal and run the `pipx install` command above. After that, `gitviz` works from any new terminal, anywhere.
+
+### From source (for development)
+
 ```
 git clone https://github.com/JackMagee21/Gitviz.git
 cd Gitviz
-pip install PyGithub colorama python-dotenv
+pip install -e .
 ```
+
+`pip install -e .` installs the same `gitviz` command, but editable — changes to the source take effect immediately without reinstalling. Note this installs into whatever Python environment is currently active, so `gitviz` is only on PATH if that environment's script/Scripts directory is too; `pipx` avoids that problem entirely.
 
 ## Usage
 
-Run the app and enter a repo as `author/repo_name` when prompted:
+Once installed, just run:
+
+```
+gitviz
+```
+
+Or, without installing, run it directly from a clone:
 
 ```
 python main.py
