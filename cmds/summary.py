@@ -1,6 +1,9 @@
 from colorama import Fore
 
 from utils.colors import color
+from utils.formatting import bar
+
+BAR_WIDTH = 20
 
 TOP_N = 5
 LARGE_REPO_COMMIT_THRESHOLD = 10000  # GitHub omits addition/deletion counts past this
@@ -35,19 +38,22 @@ def cmd_summary(repo, parameters=""):
     contributors.sort(key=lambda row: row[1], reverse=True)
     top_contributors = contributors[:TOP_N]
 
-    headers = ("Author", "Commits", "Additions", "Deletions", "% of Commits")
-    aligns = ("<", ">", ">", ">", ">")
-    column_colors = (Fore.CYAN, Fore.YELLOW, Fore.GREEN, Fore.RED, Fore.MAGENTA)
+    headers = ("Author", "Commits", "Bar", "Additions", "Deletions", "% of Commits")
+    aligns = ("<", ">", "<", ">", ">", ">")
+    column_colors = (Fore.CYAN, Fore.YELLOW, Fore.BLUE, Fore.GREEN, Fore.RED, Fore.MAGENTA)
 
     def format_changes(additions, deletions):
         if stats_unavailable:
             return "N/A", "N/A"
         return f"+{additions}", f"-{deletions}"
 
+    # Bars are relative to the top contributor shown, not the whole repo.
+    max_commits = top_contributors[0][1] if top_contributors else 0
+
     rows = []
     for name, commits, additions, deletions, share in top_contributors:
         added, removed = format_changes(additions, deletions)
-        rows.append((name, str(commits), added, removed, f"{share:.1f}%"))
+        rows.append((name, str(commits), bar(commits, max_commits, width=BAR_WIDTH), added, removed, f"{share:.1f}%"))
 
     widths = [
         max(len(header), max(len(row[i]) for row in rows))

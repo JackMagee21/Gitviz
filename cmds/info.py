@@ -5,27 +5,37 @@ from colorama import Fore, Style
 
 lines = []
 
-# Return languages as percentages, e.g. 'Python 82.1%, Shell 17.9%'.
+LANGUAGE_BAR_WIDTH = 24
+LANGUAGE_COLORS = (Fore.CYAN, Fore.GREEN, Fore.YELLOW, Fore.MAGENTA, Fore.RED)
+
+# Returns a stacked bar plus a legend, e.g. '[######------] Python 82.1%, Shell 17.9%'.
 def get_language_breakdown(repo):
     languages = repo.get_languages()   # costs 1 extra request
-    parts = []
-    total = 0
-    # Seperates JSON values into a str "lang" and num is the byte count of that language within the repo
-    for lang, num in languages.items():
-        if lang != 'url':
-            total += num
-            if(total == 0):
-                return "None detected"
+    # Separates JSON values into a str "lang" and num is the byte count of that language within the repo
+    byte_counts = [(lang, num) for lang, num in languages.items() if lang != 'url']
+    total = sum(num for _, num in byte_counts)
 
-    # Only gets the top 5 languages within the repo and calculates the percentage of each language within the repo
-    for lang, num in list(languages.items())[:5]:
-        if lang != 'url':
-            precent = round(num / total * 100, 2)
-            parts.append(f"{lang} {precent}%")
+    if total == 0:
+        return "None detected"
 
-            
+    # Only shows the top 5 languages within the repo
+    top_languages = byte_counts[:5]
 
-    return ", ".join(parts)
+    bar_parts = []
+    legend_parts = []
+    allocated = 0
+    for i, (lang, num) in enumerate(top_languages):
+        fore = LANGUAGE_COLORS[i % len(LANGUAGE_COLORS)]
+        percent = num / total * 100
+        # Give the last segment whatever width is left so rounding can't under/overfill the bar.
+        is_last = i == len(top_languages) - 1
+        segment_width = (LANGUAGE_BAR_WIDTH - allocated) if is_last else round(num / total * LANGUAGE_BAR_WIDTH)
+        allocated += segment_width
+
+        bar_parts.append(color("#" * segment_width, fore))
+        legend_parts.append(f"{color(lang, fore)} {percent:.1f}%")
+
+    return f"[{''.join(bar_parts)}] " + ", ".join(legend_parts)
 
 
 def cmd_info(repo_wrapper):
