@@ -6,10 +6,11 @@ This lists the current limitations of Gitviz: why each one exists, and how the t
 
 | Limitation | Cause | Gitviz behaviour |
 | --- | --- | --- |
-| Capped at 60 requests/hour | Gitviz calls the GitHub REST API without authentication | Heavy browsing of one repo can exhaust the quota; requests then fail until the hour rolls over |
-| Only public repos are accessible | Same as above — unauthenticated requests can't see private data | Private repos can't be browsed at all |
+| Capped at 60 requests/hour by default | Gitviz calls the GitHub REST API without authentication unless a token is set | Heavy browsing of one repo can exhaust the quota; requests then fail until the hour rolls over. Run `key <token>` with a personal access token to raise this to 5,000/hour |
+| Only public repos are accessible | A classic unscoped personal access token (or no token at all) can't see private data | Private repos can't be browsed at all |
 | Additions/Deletions show as `N/A` on repos with 10,000+ commits | GitHub's `stats/contributors` endpoint stops returning line-change counts past that size, to keep the endpoint fast | `summary` detects this and shows `N/A` instead of a misleading `0` |
 | Contributor stats can take a few seconds to appear | GitHub computes `stats/contributors` asynchronously and returns "still generating" the first time a repo is queried | `summary` retries a few times with a short delay before giving up |
+| Contributor stats can be cached and stale | GitHub can serve an outdated `stats/contributors` snapshot after a burst of new commits, without ever signalling "still computing" | `summary` cross-checks the stats total against the repo's real commit count and warns if contributors look missing or undercounted (unless the gap is explained by the endpoint's own 100-contributor cap) |
 | Files over 1 MB can't be read | GitHub's Contents API only returns file content up to 1 MB | `cat` shows a "too large to display" message instead of the file |
 | Binary files can't be displayed | File content comes back meant to be decoded as UTF-8 text | `cat` shows a "binary file, not displayed" message instead of raw bytes |
 
