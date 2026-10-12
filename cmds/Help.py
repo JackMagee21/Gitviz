@@ -4,7 +4,7 @@ COMMANDS = {
     "ls":      ("ls [path]",            "lists files and folders in a directory (folders first, alphabetical)"),
     "cat":     ("cat <path> [all]",     "shows a file's content; previews the first 40 lines unless 'all' is given"),
     "cd":      ("cd [path]",            "changes directory; 'cd' or 'cd /' returns to the repo root, 'cd ..' goes up one level"),
-    "log":     ("log [count]",          "shows the most recent commits for the current directory (default 10, max 100)"),
+    "log":     ("log [count] [path]",   "shows the most recent commits for the current directory, or for a path (default 10, max 100)"),
     "show":    ("show <sha> [file]",    "shows what a commit changed; add a file path to see that file's diff"),
     "summary": ("summary",             "shows the top 5 contributors by commits, additions and deletions"),
     "repo":    ("repo <author/name>",   "switches to browsing a different repo, e.g. 'repo torvalds/linux'"),
