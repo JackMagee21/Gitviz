@@ -13,7 +13,7 @@ from cmds.show import cmd_show
 
 def cmd(repo, command, parameters=""):
     if command == "help":
-        print(help_cmd())
+        print(help_cmd(parameters))
     elif command == "ls":
         print(cmd_ls(repo, parameters))
     elif command == "info":
