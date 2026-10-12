@@ -7,7 +7,7 @@ def sort_folders_first(item):
 def cmd_ls(repo, path=""):
     lines = []
     try:
-        items = repo.repo.get_contents(path)
+        items = repo.repo.get_contents(repo.current_path + "/" + path if repo.current_path else path)
     except UnknownObjectException:
         return f"ls: {path}: no such directory"
 
