@@ -5,7 +5,6 @@ from utils.formatting import format_date
 from utils.paths import figure_path 
 
 DEFAULT_COUNT = 10
-DEFAULT_NUM_OF_LOGS = 10
 MAX_COUNT = 100
 MAX_MESSAGE_LENGTH = 70
 
@@ -34,24 +33,13 @@ def first_line(message):
 
 
 def cmd_log(repo, parameters=""):
+    count, target = parse_log_args(parameters)
+    path = figure_path(repo.current_path, target) if target else repo.current_path
 
-    
-
-    current_commit_ids = None
-    current_repo_path = repo.current_path
-
-    if parameters == "":
-        current_commit_ids = repo.get_commits(DEFAULT_NUM_OF_LOGS, current_repo_path)
-        parameters = str(DEFAULT_NUM_OF_LOGS)
-    else:
-        current_commit_ids = repo.get_commits(int(parameters), current_repo_path)
-
-    if int(parameters) < 0:
-            print("log: Cannot use an interger bellow 0")
-            return
+    current_commit_ids = repo.get_commits(count, path)
 
     if not current_commit_ids:
-        print("log: no commits found")
+        print(f"log: {target}: no commits found" if target else "log: no commits found")
         return
 
     headers = ("Commit ID", "Author", "Date", "Message")
@@ -65,7 +53,7 @@ def cmd_log(repo, parameters=""):
         for com in current_commit_ids
     ]
 
-        # Work out how wide each column needs to be so everything lines up
+    # Work out how wide each column needs to be so everything lines up
     widths = [
         max(len(header), max(len(row[col]) for row in rows))
         for col, header in enumerate(headers)
