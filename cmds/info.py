@@ -3,8 +3,6 @@ from utils.colors import color
 
 from colorama import Fore, Style
 
-lines = []
-
 LANGUAGE_BAR_WIDTH = 24
 LANGUAGE_COLORS = (Fore.CYAN, Fore.GREEN, Fore.YELLOW, Fore.MAGENTA, Fore.RED)
 
@@ -72,6 +70,7 @@ def cmd_info(repo_wrapper):
         rows.append(("Status", ", ".join(status)))
 
     label_width = max(len(label) for label, _ in rows)
+    lines = []
 
     for label, value in rows:
         padded_label = label.ljust(label_width)
