@@ -24,5 +24,4 @@ This lists the current limitations of Gitviz: why each one exists, and how the t
 | `repo` with no argument can error out | It prints a usage message but still attempts to switch repos afterwards, which can raise an unhandled error instead of stopping cleanly |
 | No branch or tag selection | Every command reads from the repo's default branch; there's no way to browse a different branch or tag |
 | No search | There's no way to search file names or code content across a repo |
-| No commit diff view | `log` shows commit messages, but there's no way to see what a specific commit actually changed |
 | Single repo per session | Only one repo is "open" at a time; `repo` replaces it rather than letting you compare two |

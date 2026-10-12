@@ -11,6 +11,7 @@ Gitviz is a small terminal tool for poking around any public GitHub repository w
 
 - **Browse the file tree** one folder at a time with `ls`, or see everything at once as a nested tree with `tree`
 - **View recent commits** for whatever folder you're currently in
+- **See what a commit changed** with `show`, including a colored diff for any single file
 - **See repo info** such as the description, stars, forks, license and a colored bar showing which languages are used
 - **See the top 5 contributors**, ranked by commits, along with their additions and deletions
 - **Read files** straight from GitHub, with long files trimmed to a preview
@@ -75,6 +76,7 @@ Enter repo author and name with a slash (/) in between (e.g. name/repo_name), or
 torvalds/linux:/> ls
 torvalds/linux:/> cd kernel
 torvalds/linux:/kernel> log 5
+torvalds/linux:/kernel> show a1b2c3d
 torvalds/linux:/> tree drivers/usb
 torvalds/linux:/> summary
 ```
@@ -103,6 +105,7 @@ The token is saved to a local `.env` file, which is already in `.gitignore`, and
 | Cat | `cat <path> [all]` | Shows the contents of a file. Only the first 40 lines are shown unless you add `all` |
 | Change directory | `cd [path]` | Changes directory. `cd` or `cd /` takes you back to the root, and `cd ..` goes up one level |
 | Log | `log [count]` | Shows the most recent commits for the current folder (10 by default, up to 100) |
+| Show | `show <sha> [file]` | Shows what a commit changed. Add a file path to see the diff for just that file |
 | Summary | `summary` | Shows the top 5 contributors by commits, additions and deletions |
 | Repo | `repo <author/name>` | Switches to a different repo, for example `repo torvalds/linux` |
 | Tree | `tree [path]` | Shows a nested tree of every file and folder under a path |
@@ -129,7 +132,7 @@ RepoData.py                RepoWrapper, which holds the repo, the current path a
 cmds/
   cmd.py                   Sends each command to the right handler
   help.py, info.py, ls.py, cd.py, logs.py, repo.py, summary.py, cat.py,
-  tree.py, key.py, clear.py
+  tree.py, key.py, clear.py, show.py
                             One file per command
 utils/
   colors.py                Color helper (turns itself off outside a terminal or with NO_COLOR)
