@@ -1,12 +1,7 @@
-from github import Github
-from RepoData import set_repo
-
-git = Github()
-
 def cmd_repo(repo, parameters=""):
     if parameters == "":
         print("Error: no repo name added, enter (for example) Author/Repo_name")
+        return
 
-    if repo.switch_repo(parameters) == False:
+    if not repo.switch_repo(parameters):
         print("Repo cannot be found")
-    
