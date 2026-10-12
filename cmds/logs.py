@@ -33,6 +33,11 @@ def first_line(message):
 
 
 def cmd_log(repo, parameters=""):
+
+    if not parameters.isdigit() and parameters.strip() != "" or parameters.isdigit() and int(parameters) <= 0:
+        print("log: invalid argument. Please provide a number above 0 for commit count or leave it empty.")
+        return
+    
     count, target = parse_log_args(parameters)
     path = figure_path(repo.current_path, target) if target else repo.current_path
 
