@@ -19,7 +19,6 @@ This lists the current limitations of Gitviz: why each one exists, and how the t
 | Limitation | Detail |
 | --- | --- |
 | `ls` ignores the current directory | Calling `ls` with no path always lists the repo root, not wherever `cd` has navigated to — you need to pass the full path explicitly for now |
-| `log` only accepts a commit count | `log <argument>` is parsed as a number; passing anything else (e.g. a folder name) raises an error instead of scoping the log to that path |
 | `summary` is always repo-wide | GitHub's contributor-stats endpoint isn't scoped by path, so `cd`-ing into a folder has no effect on `summary` |
 | `repo` with no argument can error out | It prints a usage message but still attempts to switch repos afterwards, which can raise an unhandled error instead of stopping cleanly |
 | No branch or tag selection | Every command reads from the repo's default branch; there's no way to browse a different branch or tag |

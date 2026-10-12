@@ -104,7 +104,7 @@ The token is saved to a local `.env` file, which is already in `.gitignore`, and
 | List | `ls [path]` | Lists the files and folders in a directory, with folders first and everything sorted alphabetically |
 | Cat | `cat <path> [all]` | Shows the contents of a file. Only the first 40 lines are shown unless you add `all` |
 | Change directory | `cd [path]` | Changes directory. `cd` or `cd /` takes you back to the root, and `cd ..` goes up one level |
-| Log | `log [count]` | Shows the most recent commits for the current folder (10 by default, up to 100) |
+| Log | `log [count] [path]` | Shows the most recent commits for the current folder, or for a file or folder you name (10 by default, up to 100) |
 | Show | `show <sha> [file]` | Shows what a commit changed. Add a file path to see the diff for just that file |
 | Summary | `summary` | Shows the top 5 contributors by commits, additions and deletions |
 | Repo | `repo <author/name>` | Switches to a different repo, for example `repo torvalds/linux` |
