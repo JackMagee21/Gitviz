@@ -35,7 +35,7 @@ def cmd(repo, command, parameters=""):
     elif command == "tree":
         cmd_tree(repo, parameters)
     elif command == "clear" or command == "clr":
-        cmd_clear(parameters);
+        cmd_clear(parameters)
     elif command == "key":
         print(cmd_key(repo, parameters))
     else:
