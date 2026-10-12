@@ -18,7 +18,9 @@ def cmd(repo, command, parameters=""):
     elif command == "info":
         print(cmd_info(repo))
     elif command == "cd":
-        cmd_cd(repo, parameters)
+        message = cmd_cd(repo, parameters)
+        if message:
+            print(message)
     elif command == "log":
         cmd_log(repo, parameters)
     elif command == "repo":
