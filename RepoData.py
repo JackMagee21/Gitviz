@@ -66,7 +66,7 @@ class RepoWrapper:
         # GitHub computes contributor stats asynchronously. A None result means
         # "still generating" (HTTP 202) rather than "no contributors", so retry
         # a few times with a short pause before giving up.
-        for attempt in range(retries):
+        for _ in range(retries):
             stats = self.repo.get_stats_contributors()
             if stats is not None:
                 return stats
