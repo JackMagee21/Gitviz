@@ -5,6 +5,8 @@
 
 Gitviz is a terminal REPL for exploring a public GitHub repository — browse its file tree, read commit history, check repo metadata, and see top contributors — all live via the GitHub API, with nothing cloned to disk.
 
+![Gitviz demo](docs/demo.gif)
+
 ## Features
 
 - **Browse the file tree** directory by directory (`ls`), or see the whole thing at once as a nested tree (`tree`)
