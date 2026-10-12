@@ -9,6 +9,7 @@ from cmds.cat import cmd_cat
 from cmds.tree import cmd_tree
 from cmds.clear import cmd_clear
 from cmds.key import cmd_key
+from cmds.show import cmd_show
 
 def cmd(repo, command, parameters=""):
     if command == "help":
@@ -23,6 +24,8 @@ def cmd(repo, command, parameters=""):
             print(message)
     elif command == "log":
         cmd_log(repo, parameters)
+    elif command == "show":
+        print(cmd_show(repo, parameters))
     elif command == "repo":
         cmd_repo(repo, parameters)
     elif command == "summary":
