@@ -1,19 +1,10 @@
 from RepoData import set_repo, get_token_warning
 from cmds.cmd import cmd
-
-import subprocess
-import os
-
-
-def clear_terminal():
-    if os.name == "nt":  # Windows systems
-        subprocess.call("cls", shell=True)
-    else:
-        subprocess.call("clear")
+from cmds.clear import cmd_clear
 
 
 def main():
-    clear_terminal()
+    cmd_clear()
 
     token_warning = get_token_warning()
     if token_warning:
