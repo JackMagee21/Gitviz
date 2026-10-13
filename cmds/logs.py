@@ -1,4 +1,5 @@
 from colorama import Fore
+from github import GithubException
 
 from utils.colors import color
 from utils.formatting import format_date
@@ -20,7 +21,7 @@ def parse_log_args(parameters):
         else:
             target = word
 
-    count = max(1, min(count, MAX_COUNT))   # keep count between 1 and 100
+    count = min(count, MAX_COUNT)   # GitHub pages max out at 100
     return count, target
 
 
@@ -33,15 +34,20 @@ def first_line(message):
 
 
 def cmd_log(repo, parameters=""):
-
-    if not parameters.isdigit() and parameters.strip() != "" or parameters.isdigit() and int(parameters) <= 0:
-        print("log: invalid argument. Please provide a number above 0 for commit count or leave it empty.")
-        return
-    
     count, target = parse_log_args(parameters)
+    if count < 1:
+        print("log: commit count must be above 0, e.g. 'log 5'")
+        return
+
     path = figure_path(repo.current_path, target) if target else repo.current_path
 
-    current_commit_ids = repo.get_commits(count, path)
+    try:
+        current_commit_ids = repo.get_commits(count, path)
+    except GithubException as e:
+        if e.status == 409:   # GitHub returns 409 for a repo with no commits
+            print("log: no commits found")
+            return
+        raise
 
     if not current_commit_ids:
         print(f"log: {target}: no commits found" if target else "log: no commits found")
