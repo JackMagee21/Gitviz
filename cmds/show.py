@@ -1,3 +1,5 @@
+from itertools import islice
+
 from github import GithubException, UnknownObjectException
 from colorama import Fore
 
@@ -98,17 +100,20 @@ def cmd_show(repo, parameters=""):
             return f"show: {sha}: no such commit"
         raise
 
-    # The first page of files comes with the commit, so slicing here costs no extra requests
-    files = list(commit.files[:MAX_FILES + 1])
-    has_more = len(files) > MAX_FILES
-    files = files[:MAX_FILES]
-
     if target:
+        # Search every changed file, not just the first MAX_FILES, so big commits still match.
+        # Iteration stops at the match, so later pages are only fetched when needed.
         file_path = figure_path(repo.current_path, target)
-        for f in files:
+        for f in commit.files:
             if f.filename == file_path:
                 return "\n".join(render_patch(f))
         return f"show: {target}: not changed in this commit"
+
+    # The first page of files comes with the commit, so this costs no extra requests.
+    # islice rather than a slice: PyGithub's slice raises IndexError on an empty list.
+    files = list(islice(commit.files, MAX_FILES + 1))
+    has_more = len(files) > MAX_FILES
+    files = files[:MAX_FILES]
 
     lines = render_details(commit)
     if files:
