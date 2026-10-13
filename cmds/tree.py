@@ -63,7 +63,7 @@ def cmd_tree(repo, parameters=""):
     target = parameters.strip()
     path = figure_path(repo.current_path, target) if target else repo.current_path
 
-    entries, error = repo.get_tree(path)
+    entries, truncated, error = repo.get_tree(path)
     if error:
         print(f"tree: {target or '.'}: {error}")
         return
@@ -83,3 +83,6 @@ def cmd_tree(repo, parameters=""):
 
     print(f"\n{dir_count} director{'y' if dir_count == 1 else 'ies'}, "
           f"{file_count} file{'' if file_count == 1 else 's'}")
+
+    if truncated:
+        print("Note: GitHub truncated this tree because the repo is too large, so some entries are missing")
