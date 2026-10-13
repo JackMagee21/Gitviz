@@ -1,5 +1,6 @@
 import os
 import time
+from itertools import islice
 
 from dotenv import load_dotenv
 from github import Auth, BadCredentialsException, Github, UnknownObjectException
@@ -60,7 +61,9 @@ class RepoWrapper:
         else:
             all_commits = self.repo.get_commits()
 
-        return list(all_commits[:count])
+        # islice rather than all_commits[:count]: PyGithub's slice raises
+        # IndexError when the list is empty (e.g. a path with no commits)
+        return list(islice(all_commits, count))
 
     def get_stats_contributors(self, retries=5, delay=2):
         # GitHub computes contributor stats asynchronously. A None result means
@@ -104,20 +107,23 @@ class RepoWrapper:
             return None, "binary file, not displayed"
 
     def get_tree(self, path="", rev=None):
-        # Returns (entries, error). entries is the list of GitTreeElement
+        # Returns (entries, truncated, error). entries is the list of GitTreeElement
         # items (blobs/trees) under `path`, fetched recursively in a single
-        # API call; error explains a failure instead of raising. `rev`
-        # defaults to the repo's default branch.
+        # API call; truncated is True when GitHub cut the listing short because
+        # the repo is too large; error explains a failure instead of raising.
+        # `rev` defaults to the repo's default branch.
         branch = rev or self.repo.default_branch
         path = path.strip("/")
 
         try:
             git_tree = self.repo.get_git_tree(branch, recursive=True)
         except UnknownObjectException:
-            return None, "no such branch or revision"
+            return None, False, "no such branch or revision"
+
+        truncated = git_tree.raw_data.get("truncated", False)
 
         if path == "":
-            return git_tree.tree, None
+            return git_tree.tree, truncated, None
 
         matches = [
             entry for entry in git_tree.tree
@@ -125,9 +131,11 @@ class RepoWrapper:
         ]
 
         if not matches:
-            return None, "no such file or directory"
+            # A missing path in a truncated tree may just be one GitHub left out
+            error = "not found (GitHub truncated this repo's tree, so it may be missing)" if truncated else "no such file or directory"
+            return None, truncated, error
 
-        return matches, None
+        return matches, truncated, None
         
 
 #returns an "empty none" object if the repo cannot be found 
