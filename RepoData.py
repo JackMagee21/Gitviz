@@ -44,6 +44,12 @@ def get_rate_limit():
     rate = git.get_rate_limit().rate
     return rate.remaining, rate.limit
 
+def get_repo_of_user():
+    try:
+        return git.get_user().Login
+    except BadCredentialsException:
+        return None
+
 MAX_FILE_SIZE = 1024 * 1024  # GitHub's Contents API only returns content for files up to 1 MB
 
 class RepoWrapper:
@@ -136,6 +142,15 @@ class RepoWrapper:
             return None, truncated, error
 
         return matches, truncated, None
+
+    def get_repo_of_user(self, user):
+        try:
+            if(user != None):
+                return git.get_user(user).get_repos()
+            else:
+                return git.get_user().get_repos()
+        except BadCredentialsException:
+            return None
         
 
 #returns an "empty none" object if the repo cannot be found 
