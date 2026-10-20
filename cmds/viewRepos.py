@@ -1,5 +1,5 @@
 from colorama import Style, Fore
-from utils.colors import color, bold
+from utils.colors import color
 
 def cmd_view_repos(repo, parameters=""):
    for r in repo.get_repo_of_user(parameters):
