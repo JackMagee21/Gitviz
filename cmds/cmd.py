@@ -1,5 +1,6 @@
 from cmds.help import help_cmd
 from cmds.ls import cmd_ls
+from cmds.find import cmd_find
 from cmds.info import cmd_info
 from cmds.cd import cmd_cd
 from cmds.logs import cmd_log
@@ -17,6 +18,8 @@ def cmd(repo, command, parameters=""):
         print(help_cmd(parameters))
     elif command == "ls":
         print(cmd_ls(repo, parameters))
+    elif command == "find":
+        print(cmd_find(repo, parameters))
     elif command == "info":
         print(cmd_info(repo))
     elif command == "cd":

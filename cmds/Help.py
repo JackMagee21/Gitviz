@@ -2,6 +2,7 @@ COMMANDS = {
     "help":    ("help [command]",       "shows this list, or details about one command"),
     "info":    ("info",                 "shows details about the current repo (description, stars, languages, etc.)"),
     "ls":      ("ls [path]",            "lists files and folders in a directory (folders first, alphabetical)"),
+    "find":    ("find <pattern>",       "finds files and folders by name under the current directory; use * and ? for patterns, e.g. 'find *.py'"),
     "cat":     ("cat <path> [all]",     "shows a file's content; previews the first 40 lines unless 'all' is given"),
     "cd":      ("cd [path]",            "changes directory; 'cd' or 'cd /' returns to the repo root, 'cd ..' goes up one level"),
     "log":     ("log [count] [path]",   "shows the most recent commits for the current directory, or for a path (default 10, max 100)"),
